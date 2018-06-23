@@ -10,7 +10,8 @@ namespace CS_Perf
     {
         static void Main(string[] args)
         {
-            CreateCsvFile();
+            CreateCsvFile(5000000);  // 50 lac
+            TestArraySize(10000000);
 
             List<Employee> employees = ReadCsvFile();
 
@@ -24,6 +25,26 @@ namespace CS_Perf
 
 
             Console.ReadLine();
+        }
+
+        static void TestArraySize(int size)
+        {
+            //int size = 10000000;
+            object[] array = new object[size];
+
+            long before = GC.GetTotalMemory(true);
+            for (int i = 0; i < size; i++)
+            {
+                array[i] = new object();
+            }
+            long after = GC.GetTotalMemory(true);
+
+            double diff = after - before;
+
+            Console.WriteLine("Per object: " + diff / size);
+
+            // Stop the GC from messing up our measurements
+            GC.KeepAlive(array);
         }
 
         static List<Employee> ReadCsvFile()
@@ -51,7 +72,7 @@ namespace CS_Perf
             return employees;
         }
 
-        static void CreateCsvFile()
+        static void CreateCsvFile(int noOfRecords)
         {
             string filePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) +  @"\data\employees.csv";
 
@@ -59,7 +80,7 @@ namespace CS_Perf
 
             using (var w = new StreamWriter(filePath))
             {
-                for ( var i = 1; i <= 100000; i++)
+                for ( var i = 1; i <= noOfRecords; i++)
                 {
                     var id = i.ToString();
                     var name = "name " + i.ToString();

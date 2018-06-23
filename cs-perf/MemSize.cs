@@ -8,10 +8,10 @@ namespace CS_Perf
 {
     class MemSize<T>
     {
-        static private int SizeOfObj(Type T, object thevalue)
+        static private long SizeOfObj(Type T, object thevalue)
         {
             var type = T;
-            int returnval = 0;
+            long returnval = 0;
             if (type.IsValueType)
             {
                 var nulltype = Nullable.GetUnderlyingType(type);
@@ -28,7 +28,7 @@ namespace CS_Perf
             else if (thevalue is Stream)
             {
                 Stream thestram = thevalue as Stream;
-                returnval = (int)thestram.Length;
+                returnval = thestram.Length;
             }
             else if (type.IsSerializable)
             {
@@ -38,7 +38,7 @@ namespace CS_Perf
                     {
                         BinaryFormatter formatter = new BinaryFormatter();
                         formatter.Serialize(s, thevalue);
-                        returnval = (int)s.Length;
+                        returnval = s.Length;
                     }
                 }
                 catch {
@@ -63,7 +63,7 @@ namespace CS_Perf
                 catch { }
             return returnval;
         }
-        static public int SizeOf(T value)
+        static public long SizeOf(T value)
         {
             return SizeOfObj(typeof(T), value);
         }
