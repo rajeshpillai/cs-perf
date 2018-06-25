@@ -4,23 +4,26 @@ using System.Dynamic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using NFX;
+
 using CS_Perf.Models;
+using NFX.ApplicationModel.Pile;
 
 namespace CS_Perf
 {
     class Program
     {
         const int size = 10000000;
-        const string FILE_NAME = "1-lac-3-fields.csv";
+        const string FILE_NAME = "1-lac-50-fields.csv";
 
         static void Main(string[] args)
         {
             //CreateCsvFile(size,50); 
             //TestArraySize(size);
 
-            TestListOfEmployes();
             TestDictOfEmployes();
             TestListOfEmployeesStruct();
+            TestListOfEmployes();
           
 
             /*
@@ -57,9 +60,21 @@ namespace CS_Perf
 
         static void TestListOfEmployes()
         {
-
             long before = GC.GetTotalMemory(true);
-            List<Employee> employees = ReadCsvFileAsList();
+            List<Employee> employees = new List<Employee>();
+
+            PilePointer empPointer;
+
+            //using (var pile = new DefaultPile())
+            //{
+            //   pile.Start();
+            //   empPointer = pile.Put(ReadCsvFileAsList());
+               
+            //}
+
+            employees = ReadCsvFileAsList();
+
+
             long after = GC.GetTotalMemory(true);
 
             Console.WriteLine(String.Format("Read {0} employees.", employees.Count));
@@ -138,6 +153,7 @@ namespace CS_Perf
             StreamReader sr = new StreamReader(filePath);
 
             string data = string.Empty;
+
 
             while ((data = sr.ReadLine()) != null)
             {
